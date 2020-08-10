@@ -1,9 +1,12 @@
+import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Vector;
@@ -12,44 +15,87 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
 public class Main {
+	static String[] names = {"Households with gadgets", "etc."};
 	
 	static JFrame frame = new JFrame("hello");
 	static JPanel queryPanel = new JPanel();
 	static JPanel buttonPanel = new JPanel();
 	static JPanel resultsPanel = new JPanel();
-	static JTextField textfield = new JTextField("Type your query here");
+	static JPanel statementPanel = new JPanel();
+	static JTextField textfield = new JTextField("         ");
+	static JTextArea textArea = new JTextArea(20,40); ///
 	static JTable table;
 	static JButton run = new JButton("Run Query");
+	static JComboBox combo = new JComboBox(names);
+	static JLabel label1 = new JLabel("Sample");
 	
 	static ArrayList<String> columnNames = new ArrayList<String>();
 	static ArrayList<ArrayList> data = new ArrayList<ArrayList>();
+//	static String DB_URL = "jdbc:mysql://localhost:3306/new_schema";
 	static String DB_URL = "jdbc:mysql://localhost:3306/advandb_mco1?useSSL=false";
 	static String USER = "root";
 	static String PASS = "root";
 	static String sql;
+	static long startTime;
+	static long endTime;
+	static long executionTime;
 	
 	public static void main(String[] args) {
 		
 //		frame.show();
+		//frame.setSize(500,500);
 		frame.setBounds(500, 500, 500, 500);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setLayout(new FlowLayout());
 		
-		frame.add(queryPanel);
-		frame.add(buttonPanel);
-		frame.add(resultsPanel);
-
 		
+
 		textfield.setBounds(50, 50, 50, 50);
 		
-		queryPanel.setPreferredSize(new Dimension(200,200));
-		queryPanel.add(textfield);
+		queryPanel.setPreferredSize(new Dimension(400,200));
+		queryPanel.setLayout(new BoxLayout(queryPanel,BoxLayout.Y_AXIS));
+		queryPanel.add(combo);
+		queryPanel.add(statementPanel);
 		
-		buttonPanel.setPreferredSize(new Dimension(200,200));
+		statementPanel.add(label1);
+		statementPanel.add(textfield);
+		//queryPanel.add(textfield);
+		queryPanel.add(textArea);
+		
+		combo.addItemListener(new ItemListener() {
+
+			@Override
+			public void itemStateChanged(ItemEvent e) {
+				// TODO Auto-generated method stub
+				if(e.getSource() == combo)
+				{
+					switch(combo.getSelectedIndex())
+					{
+					case 0: statementPanel.remove(label1);
+					statementPanel.validate();
+					break;
+					case 1: statementPanel.add(label1);
+					statementPanel.validate();
+					break;
+					}
+//					label1.setText(combo.getSelectedItem().toString());
+				}
+			}
+			
+		});
+
+		
+		buttonPanel.setPreferredSize(new Dimension(100,50));
+		buttonPanel.setLayout(new BoxLayout(buttonPanel,BoxLayout.Y_AXIS));///
 		buttonPanel.add(run);
 		
-//		resultsPanel.setPreferredSize(new Dimension(200,200));
+		resultsPanel.setPreferredSize(new Dimension(400,200));
 		
+//		resultsPanel.setPreferredSize(new Dimension(200,200));
+		frame.add(buttonPanel,BorderLayout.CENTER);
+		frame.add(queryPanel,BorderLayout.CENTER);
+		frame.add(resultsPanel,BorderLayout.CENTER);
+
 		
 		run.addActionListener(new ActionListener(){  
 		    public void actionPerformed(ActionEvent e){
@@ -65,9 +111,13 @@ public class Main {
 				   System.out.println("Creating statement...");
 				   stmt = conn.createStatement();
 				      
-				   sql = textfield.getText(); //"SELECT COUNT(cshforwrk_mem_refno) FROM hpq_cshforwrk_mem"
+				   sql = textArea.getText(); //"SELECT COUNT(cshforwrk_mem_refno) FROM hpq_cshforwrk_mem"
+				   startTime = System.currentTimeMillis();
 				   ResultSet rs = stmt.executeQuery(sql);
-
+				   endTime = System.currentTimeMillis();
+				   
+				   executionTime = (endTime - startTime)/1000;
+				   System.out.println("Execution time is:" + executionTime + " seconds");
 				   
 				   table = new JTable(buildTableModel(rs));
 				   
@@ -75,8 +125,6 @@ public class Main {
 				   resultsPanel.add(table);
 				   resultsPanel.revalidate();
 				   resultsPanel.repaint();
-//				   frame.revalidate();
-//				   frame.repaint();
 				      
 				   rs.close();
 				   stmt.close();
@@ -128,7 +176,8 @@ public class Main {
 		
 		
 		
-//		final String JDBC_DRIVER = "com.mysql.cj.jdbc.Driver";  di na daw need sa bagong version ng mysql connector pero uncomment na lang pag kailangan pa sa ibang version
+		
+		final String JDBC_DRIVER = "com.mysql.cj.jdbc.Driver";//  di na daw need sa bagong version ng mysql connector pero uncomment na lang pag kailangan pa sa ibang version
 		
 		
 		   
