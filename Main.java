@@ -15,19 +15,28 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
 public class Main {
-	static String[] names = {"Households with gadgets", "etc."};
+	static String[] names = {"List all households with at least x electronics", "etc."};
 	
 	static JFrame frame = new JFrame("hello");
 	static JPanel queryPanel = new JPanel();
 	static JPanel buttonPanel = new JPanel();
 	static JPanel resultsPanel = new JPanel();
 	static JPanel statementPanel = new JPanel();
-	static JTextField textfield = new JTextField("         ");
 	static JTextArea textArea = new JTextArea(20,40); ///
 	static JTable table;
-	static JButton run = new JButton("Run Query");
+	static JButton run = new JButton("Run query from text area");
 	static JComboBox combo = new JComboBox(names);
-	static JLabel label1 = new JLabel("Sample");
+	
+	//components for query 1
+	static SpinnerModel model = new SpinnerNumberModel(1, //initial value
+	                               				1, //min
+	                               				100, //max
+	                               				1);  //step  
+	static JLabel query1label1 = new JLabel("Find all families who have at least");
+	static JSpinner query1spinner = new JSpinner(model);
+	static String[] query1electronics = {"radio", "tv", "stereo", "karaoke","ref", "efan",  "iron", "wmach", "microw", "computer", "celfone", "telefone", "airc", "sewmach"};
+	static JComboBox query1electronicsCombo = new JComboBox(query1electronics);
+	static JButton test = new JButton("Run set query");
 	
 	static ArrayList<String> columnNames = new ArrayList<String>();
 	static ArrayList<ArrayList> data = new ArrayList<ArrayList>();
@@ -36,9 +45,9 @@ public class Main {
 	static String USER = "root";
 	static String PASS = "root";
 	static String sql;
-	static long startTime;
-	static long endTime;
-	static long executionTime;
+	static double startTime;
+	static double endTime;
+	static double executionTime;
 	
 	public static void main(String[] args) {
 		
@@ -49,16 +58,14 @@ public class Main {
 		frame.setLayout(new FlowLayout());
 		
 		
-
-		textfield.setBounds(50, 50, 50, 50);
-		
 		queryPanel.setPreferredSize(new Dimension(400,200));
 		queryPanel.setLayout(new BoxLayout(queryPanel,BoxLayout.Y_AXIS));
 		queryPanel.add(combo);
 		queryPanel.add(statementPanel);
 		
-		statementPanel.add(label1);
-		statementPanel.add(textfield);
+		statementPanel.add(query1label1);
+		statementPanel.add(query1spinner);
+		statementPanel.add(query1electronicsCombo);
 		//queryPanel.add(textfield);
 		queryPanel.add(textArea);
 		
@@ -71,12 +78,16 @@ public class Main {
 				{
 					switch(combo.getSelectedIndex())
 					{
-					case 0: statementPanel.remove(label1);
-					statementPanel.validate();
-					break;
-					case 1: statementPanel.add(label1);
-					statementPanel.validate();
-					break;
+					case 0: statementPanel.removeAll();
+							statementPanel.add(query1label1);
+							statementPanel.add(query1spinner);
+							statementPanel.add(query1electronicsCombo);
+							statementPanel.validate();
+							break;
+						
+					case 1: statementPanel.remove(query1label1);
+							statementPanel.validate();
+							break;
 					}
 //					label1.setText(combo.getSelectedItem().toString());
 				}
@@ -88,6 +99,7 @@ public class Main {
 		buttonPanel.setPreferredSize(new Dimension(100,50));
 		buttonPanel.setLayout(new BoxLayout(buttonPanel,BoxLayout.Y_AXIS));///
 		buttonPanel.add(run);
+		buttonPanel.add(test);
 		
 		resultsPanel.setPreferredSize(new Dimension(400,200));
 		
@@ -99,7 +111,7 @@ public class Main {
 		
 		run.addActionListener(new ActionListener(){  
 		    public void actionPerformed(ActionEvent e){
-		    	sql = textfield.getText();
+		    	sql = textArea.getText();
 		    	Connection conn = null;
 				Statement stmt = null;
 				try
@@ -116,8 +128,9 @@ public class Main {
 				   ResultSet rs = stmt.executeQuery(sql);
 				   endTime = System.currentTimeMillis();
 				   
-				   executionTime = (endTime - startTime)/1000;
+				   executionTime = (endTime - startTime)/1000.00000000000;
 				   System.out.println("Execution time is:" + executionTime + " seconds");
+				   System.out.println(executionTime);
 				   
 				   table = new JTable(buildTableModel(rs));
 				   
@@ -169,6 +182,84 @@ public class Main {
 				System.out.println("Goodbye!");
 		    }  
 		    }); 
+		
+		test.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				sql = textArea.getText();
+		    	Connection conn = null;
+				Statement stmt = null;
+				try
+				{
+
+				   System.out.println("Connecting to database...");
+				   conn = DriverManager.getConnection(DB_URL,USER,PASS);
+
+				   System.out.println("Creating statement...");
+				   stmt = conn.createStatement();
+				      
+				   sql = "SELECT COUNT('main.id') FROM hpq_hh WHERE " + query1electronicsCombo.getSelectedItem().toString() + ">= " + (int)query1spinner.getValue(); //"SELECT COUNT(cshforwrk_mem_refno) FROM hpq_cshforwrk_mem"
+				   startTime = System.currentTimeMillis();
+				   ResultSet rs = stmt.executeQuery(sql);
+				   endTime = System.currentTimeMillis();
+				   
+				   executionTime = (endTime - startTime)/1000.00000000000;
+				   System.out.println("Execution time is:" + executionTime + " seconds");
+				   System.out.println(executionTime);
+				   
+				   table = new JTable(buildTableModel(rs));
+				   
+				   
+				   resultsPanel.add(table);
+				   resultsPanel.revalidate();
+				   resultsPanel.repaint();
+				      
+				   rs.close();
+				   stmt.close();
+				   conn.close();
+				      
+				}
+				catch(SQLException se)
+				{
+				   //Handle errors for JDBC
+				   se.printStackTrace();
+				}
+				   
+				catch(Exception ex)
+				{
+				   //Handle errors for Class.forName
+				   ex.printStackTrace();
+				}
+				   
+				finally
+				{
+				   try
+				   {
+				      if(stmt!=null)
+				         stmt.close();
+				   }
+				   catch(SQLException se2)
+				   {
+					   //pag umabot pa dito wala na talaga hehe
+				   }
+				      
+				   try
+				   {
+				      if(conn!=null)
+				         conn.close();
+				   }
+				   catch(SQLException se)
+				   {
+				      se.printStackTrace();
+				   }
+				}
+				   
+				System.out.println("Goodbye!");
+				
+			}
+			
+		});
 		
 //		panel.add(table);
 		
