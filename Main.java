@@ -199,7 +199,7 @@ public class Main {
 				   System.out.println("Creating statement...");
 				   stmt = conn.createStatement();
 				      
-				   sql = "SELECT COUNT('main.id') FROM hpq_hh WHERE " + query1electronicsCombo.getSelectedItem().toString() + ">= " + (int)query1spinner.getValue(); //"SELECT COUNT(cshforwrk_mem_refno) FROM hpq_cshforwrk_mem"
+				   sql = "SELECT 'main.id' FROM hpq_hh WHERE " + query1electronicsCombo.getSelectedItem().toString() + ">= " + (int)query1spinner.getValue(); //"SELECT COUNT(cshforwrk_mem_refno) FROM hpq_cshforwrk_mem"
 				   startTime = System.currentTimeMillis();
 				   ResultSet rs = stmt.executeQuery(sql);
 				   endTime = System.currentTimeMillis();
