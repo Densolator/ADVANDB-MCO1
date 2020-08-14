@@ -57,23 +57,30 @@ static String[] query2death = {"Diseases of the heart", "Diseases of the vascula
 		"Complication during pregnancy of childbirth", "Accident", "Diabetes", "Disease on the lungs",
 		"Disease of the kidney", "Drowned from flood", "Victim of landslide", "Electrocuted during typhoon",
 		"Murder", "Others"};
+static String[] query3equip = {"Fish net", "Electricity", "Bagnets", "Gillnets", "Traps", "Hook and line", "Sift net", "Others"};
 static JComboBox query2deathCombo = new JComboBox(query2death);
+static JComboBox query3equipCombo = new JComboBox(query3equip);
 static JLabel query2label1 = new JLabel("Find all families and its counts of who experienced death by");
 
 
 //components for query 3
-static JLabel query3label1 = new JLabel("List the number of farmers in a household,");
-static JLabel query3label2 = new JLabel(" the average harvested crop volume,");
-static JLabel query3label3 = new JLabel("the annual average family income,");
-static JLabel query3label4 = new JLabel(" and the number of members who are under the cash for work program for household number");
+static JLabel query3label1 = new JLabel("List the number of fishes caught per household in kilograms");
+static JLabel query3label2 = new JLabel("their equipments, years of fishing experience,");
+static JLabel query3label3 = new JLabel("asked if they were hungry in the past 3 months,");
+static JLabel query3label4 = new JLabel("and boat ownerships using: ");
+//components for query 4
+static JLabel query4label1 = new JLabel("List the number of farmers in a household,");
+static JLabel query4label2 = new JLabel(" the average harvested crop volume,");
+static JLabel query4label3 = new JLabel("the annual average family income,");
+static JLabel query4label4 = new JLabel(" and the number of members who are under the cash for work program for household number");
 
-static SpinnerModel modelq3 = new SpinnerNumberModel(252162, //initial value
+static SpinnerModel modelq4 = new SpinnerNumberModel(252162, //initial value
 		0000001, //min
 		1000000000, //max
 		1);
-static JSpinner query3spinner = new JSpinner(modelq3);
+static JSpinner query4spinner = new JSpinner(modelq4);
   //step 
-static JSpinner.NumberEditor editor = new JSpinner.NumberEditor(query3spinner, "#");
+static JSpinner.NumberEditor editor = new JSpinner.NumberEditor(query4spinner, "#");
 
 
 
@@ -97,10 +104,10 @@ public static void main(String[] args) {
 }   
 public Main() {
 	this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-	Component mySpinnerEditor = query3spinner.getEditor();
+	Component mySpinnerEditor = query4spinner.getEditor();
 	JFormattedTextField jftf = ((JSpinner.DefaultEditor)mySpinnerEditor).getTextField();
 	jftf.setColumns(10);
-	query3spinner.setEditor(editor);
+	query4spinner.setEditor(editor);
 	
 	buttonPanel.setPreferredSize(new Dimension(200,70));
 	buttonPanel.setLayout(new BoxLayout(buttonPanel,BoxLayout.Y_AXIS));///
@@ -114,41 +121,7 @@ public Main() {
 	queryPanel.setLayout(new BoxLayout(queryPanel,BoxLayout.Y_AXIS));
 	queryPanel.add(combo);
 	queryPanel.add(statementPanel);
-//	queryPanel.add(textArea);
-    /*
-    table = new JTable();
-    model_table = new DefaultTableModel();
-    model_table.addColumn("1");
-    model_table.addColumn("2");
-    model_table.addColumn("3");
-    model_table.addColumn("4");
-    model_table.addColumn("5");
-    model_table.addColumn("6");
-    model_table.addColumn("7");
-    model_table.addColumn("8");
-    model_table.addColumn("9");
-    table.setModel(model_table);
-	   table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-    for(int i=0;i<30;i++){                             // add value to table
-           Vector<String> r  = new Vector<String>();
-           r.addElement("a");
-           r.addElement("b");
-           r.addElement("c");
-           r.addElement("d");
-           r.addElement("e");
-           r.addElement("f");
-           r.addElement("g");
-           r.addElement("h");
-            model_table.addRow(r);
-    } 
-    scroll_table = new JScrollPane(table);            // add table to scroll panel
-    scroll_table.setBounds(1, 2, 100, 100);
-    scroll_table.setVisible(true);
-    
-    resultsPanel.add(scroll_table);
-*/
 
-    
     mainPanel.add(buttonPanel);
 	mainPanel.add(queryPanel);
 	mainPanel.add(resultsPanel);
@@ -182,15 +155,19 @@ public Main() {
 						statementPanel.validate();
 						break;
 				case 3: statementPanel.removeAll();
-						
-						statementPanel.validate();
-						break;
-				case 4: statementPanel.removeAll();
 						statementPanel.add(query3label1);
 						statementPanel.add(query3label2);
 						statementPanel.add(query3label3);
 						statementPanel.add(query3label4);
-						statementPanel.add(query3spinner);
+						statementPanel.add(query3equipCombo);
+						statementPanel.validate();
+						break;
+				case 4: statementPanel.removeAll();
+						statementPanel.add(query4label1);
+						statementPanel.add(query4label2);
+						statementPanel.add(query4label3);
+						statementPanel.add(query4label4);
+						statementPanel.add(query4spinner);
 						statementPanel.validate();
 						break;
 				}
@@ -319,17 +296,18 @@ public Main() {
 									"hpq_hh.`boat3_own` as \"Owned Boat w/o Engine, w/o Outrigger?\", hpq_hh.`boat4` as \"Boat w/o Engine, w/o Outrigger\"," + 
 									"hpq_hh.`boat4_own` as \"Owned Boat w/o Engine, w/o Outrigger\", hpq_hh.`boat5` as \"Raft\", hpq_hh.`boat5_own` as \"Owned Raft?\"" + 
 									"FROM hpq_hh, hpq_aquaequip, hpq_aquani" + 
-									"WHERE hpq_hh.`main.id`=hpq_aquaequip.`main.id` AND hpq_hh.`main.id`=hpq_aquani.`main.id`" + 
-									"GROUP BY ID";
+									"WHERE hpq_hh.`main.id`=hpq_aquaequip.`main.id` AND hpq_hh.`main.id`=hpq_aquani.`main.id` AND hpq_aquaequip.aquaequiptype =" + (query3equipCombo.getSelectedIndex()+1) + 
+									"GROUP BY ID" + 
+									"ORDER BY COUNT(hpq_aquani.aquanitype) DESC";
 							break;
 					case 4:
 							sql = "SELECT hpq_hh.`main.id` AS ID, COUNT(hpq_crop.`main.id`) AS 'Farmers in the household', AVG(hpq_crop.crop_vol) AS 'Average Crop Vol', AVG(hpq_mem.wagcshm) AS 'Average Income', a.CFW AS 'CashForWork Program Members' " + 
 									"FROM hpq_hh, hpq_crop, hpq_mem, " + 
 									"	(SELECT hpq_hh.`main.id` AS ID, COUNT(hpq_cshforwrk_mem.`main.id`) AS CFW" + 
 									"	FROM hpq_hh  INNER JOIN  hpq_cshforwrk_mem" + 
-									"	WHERE hpq_cshforwrk_mem.`main.id`= hpq_hh.`main.id` AND hpq_hh.`main.id`= " + (int)query3spinner.getValue() +
+									"	WHERE hpq_cshforwrk_mem.`main.id`= hpq_hh.`main.id` AND hpq_hh.`main.id`= " + (int)query4spinner.getValue() +
 									"	GROUP BY ID) as a " + 
-									"WHERE hpq_hh.`main.id`=hpq_crop.`main.id` AND hpq_hh.`main.id`=hpq_mem.`main.id`AND hpq_hh.`main.id`=" + (int)query3spinner.getValue() +
+									"WHERE hpq_hh.`main.id`=hpq_crop.`main.id` AND hpq_hh.`main.id`=hpq_mem.`main.id`AND hpq_hh.`main.id`=" + (int)query4spinner.getValue() +
 									" GROUP BY ID";
 					}
 				}
