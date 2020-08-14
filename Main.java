@@ -25,7 +25,9 @@ private DefaultTableModel model_table;
 private JScrollPane scroll_table;
 
 static String[] names = {"-----Select your query-----","List all households with at least x electronics",
-		"List all households which have experienced death by x and its counts","Klint" ,"List the number of farmers in a household, the average harvested crop volume, the annual average family income, and the number of members who are under the cash for work program"};/////
+		"List all households which have experienced death by x and its counts",
+		"List the number of fishes caught per household in kilograms, their equipments, years of fishing experience, asked if they were hungry in the past 3 months, and boat ownerships",
+		"List the number of farmers in a household, the average harvested crop volume, the annual average family income, and the number of members who are under the cash for work program"};/////
 
 static JFrame frame = new JFrame("ADVANDB MCO1");
 static JPanel queryPanel = new JPanel();
@@ -127,7 +129,6 @@ public Main() {
     model_table.addColumn("9");
     table.setModel(model_table);
 	   table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-
     for(int i=0;i<30;i++){                             // add value to table
            Vector<String> r  = new Vector<String>();
            r.addElement("a");
@@ -140,12 +141,10 @@ public Main() {
            r.addElement("h");
             model_table.addRow(r);
     } 
-
     scroll_table = new JScrollPane(table);            // add table to scroll panel
     scroll_table.setBounds(1, 2, 100, 100);
     scroll_table.setVisible(true);
     
-
     resultsPanel.add(scroll_table);
 */
 
@@ -312,6 +311,16 @@ public Main() {
 									" GROUP BY hpq_hh.`main.id`";
 							break;
 					case 3: 
+							sql = "SELECT hpq_hh.`main.id` AS ID, COUNT(hpq_aquani.aquanitype) AS \"Number of Fish Caught (KG)\"," + 
+									"hpq_aquaequip.`aquaequiptype` AS ' Fishing Equipment Used', hpq_hh.`yrs_in_fishind` as \" Years of Fishing Experience\"," + 
+									"hpq_hh.fshort as \"Got Hungry past 3 months?\", hpq_hh.`boat1` as \"Boat w/ Engine and Outrigger\"," + 
+									"hpq_hh.`boat1_own` as \"Owned Boat w/ Engine and Outrigger?\", hpq_hh.`boat2` as \"Boat w/ Engine but w/o Outrigger\"," + 
+									"hpq_hh.`boat2_own` as \"Owned Boatw/ Engine but w/o Outrigger?\", hpq_hh.`boat3` as \"Boat w/o Engine, w/Outrigger\"," + 
+									"hpq_hh.`boat3_own` as \"Owned Boat w/o Engine, w/o Outrigger?\", hpq_hh.`boat4` as \"Boat w/o Engine, w/o Outrigger\"," + 
+									"hpq_hh.`boat4_own` as \"Owned Boat w/o Engine, w/o Outrigger\", hpq_hh.`boat5` as \"Raft\", hpq_hh.`boat5_own` as \"Owned Raft?\"" + 
+									"FROM hpq_hh, hpq_aquaequip, hpq_aquani" + 
+									"WHERE hpq_hh.`main.id`=hpq_aquaequip.`main.id` AND hpq_hh.`main.id`=hpq_aquani.`main.id`" + 
+									"GROUP BY ID";
 							break;
 					case 4:
 							sql = "SELECT hpq_hh.`main.id` AS ID, COUNT(hpq_crop.`main.id`) AS 'Farmers in the household', AVG(hpq_crop.crop_vol) AS 'Average Crop Vol', AVG(hpq_mem.wagcshm) AS 'Average Income', a.CFW AS 'CashForWork Program Members' " + 
@@ -430,6 +439,3 @@ public static DefaultTableModel buildTableModel(ResultSet rs)
 
 
 }
-
-
-
