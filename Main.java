@@ -48,6 +48,7 @@ static SpinnerModel model = new SpinnerNumberModel(1, //initial value
 static JLabel query1label1 = new JLabel("Find all families who have at least");
 static JSpinner query1spinner = new JSpinner(model);
 static String[] query1electronics = {"radio", "tv", "stereo", "karaoke","ref", "efan",  "iron", "wmach", "microw", "computer", "celfone", "telefone", "airc", "sewmach"};
+static String[] query1electronicsindex = {"radio_comp", "tv_comp", "stereo_comp", "karaoke_comp","ref_comp", "efan_comp",  "iron_comp", "wmach_comp", "microw_comp", "computer_comp", "cellphone_comp", "telephone_comp", "airc_comp", "sewmach_comp"};
 static JComboBox query1electronicsCombo = new JComboBox(query1electronics);
 
 
@@ -68,6 +69,7 @@ static JLabel query3label1 = new JLabel("List the number of fishes caught per ho
 static JLabel query3label2 = new JLabel("their equipments, years of fishing experience,");
 static JLabel query3label3 = new JLabel("asked if they were hungry in the past 3 months,");
 static JLabel query3label4 = new JLabel("and boat ownerships using: ");
+
 //components for query 4
 static JLabel query4label1 = new JLabel("List the number of farmers in a household,");
 static JLabel query4label2 = new JLabel(" the average harvested crop volume,");
@@ -89,7 +91,7 @@ static JButton run = new JButton("Run set query");
 static ArrayList<String> columnNames = new ArrayList<String>();
 static ArrayList<ArrayList> data = new ArrayList<ArrayList>();
 //static String DB_URL = "jdbc:mysql://localhost:3306/new_schema";
-static String DB_URL = "jdbc:mysql://localhost:3306/advandb_mco1?useSSL=false";
+static String DB_URL = "jdbc:mysql://localhost:3306/advandb_mco1?allowPublicKeyRetrieval=true&useSSL=false";
 static String USER = "root";
 static String PASS = "root";
 static String sql;
@@ -101,9 +103,9 @@ static double executionTime;
 public static void main(String[] args) {
 	
     Main main = new Main();
+    main.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 }   
 public Main() {
-	this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	Component mySpinnerEditor = query4spinner.getEditor();
 	JFormattedTextField jftf = ((JSpinner.DefaultEditor)mySpinnerEditor).getTextField();
 	jftf.setColumns(10);
@@ -279,7 +281,7 @@ public Main() {
 					case 0: 
 							break;
 					case 1: 
-							sql = "SELECT `zone`, `brgy`, `purok`, `hcn` FROM hpq_hh WHERE " + query1electronicsCombo.getSelectedItem().toString() + ">= " + (int)query1spinner.getValue(); //"SELECT COUNT(cshforwrk_mem_refno) FROM hpq_cshforwrk_mem"
+							sql = "SELECT `zone`, `brgy`, `purok`, `hcn` FROM hpq_hh USE INDEX(" + query1electronicsindex[query1electronicsCombo.getSelectedIndex()] +") WHERE " + query1electronicsCombo.getSelectedItem().toString() + ">= " + (int)query1spinner.getValue(); //"SELECT COUNT(cshforwrk_mem_refno) FROM hpq_cshforwrk_mem"
 							break;
 					case 2: 
 							sql = "SELECT hpq_hh.`main.id`, COUNT(hpq_hh.ndeath) FROM hpq_hh, hpq_death"+ 
@@ -295,10 +297,10 @@ public Main() {
 									"hpq_hh.`boat2_own` as \"Owned Boatw/ Engine but w/o Outrigger?\", hpq_hh.`boat3` as \"Boat w/o Engine, w/Outrigger\"," + 
 									"hpq_hh.`boat3_own` as \"Owned Boat w/o Engine, w/o Outrigger?\", hpq_hh.`boat4` as \"Boat w/o Engine, w/o Outrigger\"," + 
 									"hpq_hh.`boat4_own` as \"Owned Boat w/o Engine, w/o Outrigger\", hpq_hh.`boat5` as \"Raft\", hpq_hh.`boat5_own` as \"Owned Raft?\"" + 
-									"FROM hpq_hh, hpq_aquaequip, hpq_aquani" + 
-									"WHERE hpq_hh.`main.id`=hpq_aquaequip.`main.id` AND hpq_hh.`main.id`=hpq_aquani.`main.id` AND hpq_aquaequip.aquaequiptype =" + (query3equipCombo.getSelectedIndex()+1) + 
-									"GROUP BY ID" + 
-									"ORDER BY COUNT(hpq_aquani.aquanitype) DESC";
+									"FROM hpq_hh, hpq_aquaequip, hpq_aquani " + 
+									" WHERE hpq_hh.`main.id`=hpq_aquaequip.`main.id` AND hpq_hh.`main.id`=hpq_aquani.`main.id` AND hpq_aquaequip.aquaequiptype =" + (query3equipCombo.getSelectedIndex()+1) + 
+									" GROUP BY ID" + 
+									" ORDER BY COUNT(hpq_aquani.aquanitype) DESC";
 							break;
 					case 4:
 							sql = "SELECT hpq_hh.`main.id` AS ID, COUNT(hpq_crop.`main.id`) AS 'Farmers in the household', AVG(hpq_crop.crop_vol) AS 'Average Crop Vol', AVG(hpq_mem.wagcshm) AS 'Average Income', a.CFW AS 'CashForWork Program Members' " + 
@@ -312,7 +314,7 @@ public Main() {
 					}
 				}
 			   
-			   				   
+			   
 			   startTime = System.currentTimeMillis();
 			   ResultSet rs = stmt.executeQuery(sql);
 			   endTime = System.currentTimeMillis();
