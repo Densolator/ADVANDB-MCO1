@@ -38,7 +38,7 @@ public class ETLTable {
 			String sql = new String(a);//sql statements
 			rs = stmt.executeQuery(sql);
 			if(b == 1) {//read hh
-				stmt2.execute("DROP TABLE facttable;");
+				
 				while(rs.next()) {
 					//read &write part
 					
@@ -58,9 +58,10 @@ public class ETLTable {
 					int[] row = {id,mun,zone,brgy,purok,water,water_supply,low_wsupp};
 					stmt2.executeUpdate(transform(row,b,water_dist));//pass a row
 				}
+//				stmt2.execute("DROP TABLE facttable;");
 			}
 			else if(b == 2) {//mem
-				stmt2.execute("DROP TABLE members;");
+				
 				while(rs.next()) {
 					int hh_id = rs.getInt("main.id");
 					int gradel;
@@ -69,11 +70,12 @@ public class ETLTable {
 
 					//System.out.print(rs.getString("gradel")+" ");
 					int[] row = {hh_id,gradel};
-					//stmt2.executeUpdate(transform(row,b,0));
+					stmt2.executeUpdate(transform(row,b,0));
 				}
+//				stmt2.execute("DROP TABLE members;");
 			}
 			else if(b == 3) {//farm
-				stmt2.execute("DROP TABLE farming;");
+				
 				while(rs.next()) {
 					int hh_id = rs.getInt("main.id");
 					int crop_type;
@@ -82,8 +84,9 @@ public class ETLTable {
 					
 					//System.out.print(rs.getString("croptype")+" ");
 					int[] row = {hh_id,crop_type};
-					//stmt2.executeUpdate(transform(row,b,0));
+					stmt2.executeUpdate(transform(row,b,0));
 				}
+//				stmt2.execute("DROP TABLE farming;");
 			}
 			
 			//drop,copy,paste
@@ -184,5 +187,46 @@ public class ETLTable {
 			}
 
 			return sql;
+	}
+	
+	public void commit()
+	{
+		
+		String url = "jdbc:mysql://localhost:3306/advandb_mco1?allowPublicKeyRetrieval=true&useSSL=false";
+		String user = "root";
+		String password = "root";
+		
+
+		try {
+			Class.forName("com.mysql.cj.jdbc.Driver");
+			
+			conn = DriverManager.getConnection(url,user,password);
+			stmt = conn.createStatement();
+			stmt2 = conn.createStatement();
+			
+			//drop,copy,paste
+			stmt2.execute("DROP TABLE marinduque_clone.farming, marinduque_clone.members, marinduque_clone.facttable;");//drop, copy, paste 
+			stmt2.execute("CREATE TABLE marinduque_clone.facttable LIKE advandb_mco1.facttable;"); 
+			stmt2.execute("CREATE TABLE marinduque_clone.members LIKE advandb_mco1.members;"); 
+			stmt2.execute("CREATE TABLE marinduque_clone.farming LIKE advandb_mco1.farming;"); 
+			stmt2.execute("INSERT INTO marinduque_clone.facttable SELECT * FROM advandb_mco1.facttable;"); 
+			stmt2.execute("INSERT INTO marinduque_clone.members SELECT * FROM advandb_mco1.members;"); 
+			stmt2.execute("INSERT INTO marinduque_clone.farming SELECT * FROM advandb_mco1.farming;");
+		}
+		catch(ClassNotFoundException e1) {
+			System.out.println("can't find the oracle driver class");
+		} catch(SQLException e) {
+			System.out.println("sql error = " + e.getMessage());
+		} finally {
+			if(stmt != null)
+				try {
+					if(stmt!=null) stmt.close();
+					if(stmt2!=null) stmt2.close();
+					if(conn!=null)conn.close();
+				} catch(SQLException e) {
+					
+				}
+		}
+		
 	}
 }

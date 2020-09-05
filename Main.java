@@ -18,7 +18,7 @@ public class Main {
 		ETLTable creator = new ETLTable();//table submitter to the db
 		String a = new String();//hh
 		a="SELECT `main.id`, mun, zone, brgy, purok, water, water_dist, water_supply, low_wsupp\r\n" + 
-				"FROM hpq_hh";
+				"FROM hpq_hh ORDER BY `main.id` LIMIT 200";
 		System.out.println("adding lines to facttable");
 		creator.execute(a,1);//for hh to facttable
 		
@@ -26,7 +26,7 @@ public class Main {
 		
 		String b = new String("SELECT hpq_hh.`main.id`, gradel\r\n" + 
 				"FROM hpq_hh, hpq_mem\r\n" + 
-				"WHERE hpq_hh.`main.id` = hpq_mem.`main.id`");//for mem to members
+				"WHERE hpq_hh.`main.id` = hpq_mem.`main.id` ORDER BY `main.id` LIMIT 200");//for mem to members
 
 		System.out.println("adding lines to members");
 		creator.execute(b,2);//commit to the db
@@ -34,7 +34,7 @@ public class Main {
 		
 		String c = new String("SELECT hpq_hh.`main.id`, croptype\r\n" + 
 				"FROM hpq_hh LEFT OUTER JOIN hpq_crop\r\n" + 
-				"ON hpq_hh.`main.id` = hpq_crop.`main.id`");//for crop to farming
+				"ON hpq_hh.`main.id` = hpq_crop.`main.id` ORDER BY `main.id` LIMIT 200");//for crop to farming
 
 		System.out.println("adding lines to farming");
 		creator.execute(c,3);//commit to the db

@@ -105,7 +105,8 @@ String PASS = "root";
 String sql;
 String select;
 String select_query1,
-	   select_query2, 
+	   select_query2,
+	   select_query3,
 	   from_query,
 	   where_query,
 	   group_by1,
@@ -225,14 +226,14 @@ private void Main() {
 						break;
 						
 				case 1: 
-						select_query1 = " ,COUNT(is_student = TRUE) AS 'number of students' ";
+						select_query2 = " ,COUNT(is_student = TRUE) AS 'number of students' ";
 						from_query = "FROM facttable, members ";
 						where_query = "WHERE facttable.id = members.hh_id AND is_student = TRUE ";
 						break;
 
 				case 2: 
-						select_query1 = " ,COUNT(is_farmer = TRUE) AS 'number of farmers' ";
-						from_query = "FROM facttable, farming";
+						select_query2 = " ,COUNT(is_farmer = TRUE) AS 'number of farmers' ";
+						from_query = "FROM facttable, farming ";
 						where_query = "WHERE facttable.id = farming.hh_id AND is_farmer = TRUE ";
 						break;
 
@@ -246,7 +247,7 @@ private void Main() {
     mun.addActionListener(new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-            select_query1 = "SELECT mun " + select_query1;
+            select_query1 = "SELECT mun ";
             group_by1 = "GROUP BY mun ";
 
         }
@@ -255,7 +256,7 @@ private void Main() {
     zone.addActionListener(new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-            select_query1 = "SELECT zone " + select_query1;
+            select_query1 = "SELECT zone ";
             group_by1 = "GROUP BY zone ";
 
         }
@@ -264,7 +265,7 @@ private void Main() {
     brgy.addActionListener(new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-            select_query1 = "SELECT brgy " + select_query1;
+            select_query1 = "SELECT brgy ";
             group_by1 = "GROUP BY brgy ";
 
         }
@@ -273,7 +274,7 @@ private void Main() {
     purok.addActionListener(new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-            select_query1 = "SELECT purok " + select_query1;
+            select_query1 = "SELECT purok ";
             group_by1 = "GROUP BY purok ";
 
         }
@@ -283,7 +284,7 @@ private void Main() {
     water.addActionListener(new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-            select_query2 = ", water, COUNT(water) AS 'number of " + combo.getSelectedItem().toString() +" that use this water source' " ;
+            select_query3 = ", water, COUNT(water) AS 'number of " + combo.getSelectedItem().toString() +" that use this water source' " ;
             group_by2 = ",water ";
             moredetails_button.setEnabled(true);
         }
@@ -292,7 +293,7 @@ private void Main() {
     nearest_wsource.addActionListener(new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-            select_query2 = ", AVG(water_dist) AS 'average distance to nearest water source' " ;
+            select_query3 = ", AVG(water_dist) AS 'average distance to nearest water source' " ;
             group_by2 = "";
             moredetails_button.setEnabled(true);
 
@@ -302,7 +303,7 @@ private void Main() {
     dec_water.addActionListener(new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-            select_query2 = ",  water_supply AS 'Most common answer', COUNT(water_supply) AS 'number of times answered' " ;
+            select_query3 = ",  water_supply AS 'Most common answer', COUNT(water_supply) AS 'number of times answered' " ;
             group_by2 = " ORDER BY 'most prevalent answer' DESC LIMIT 1 ";
             moredetails_button.setEnabled(true);
         }
@@ -311,7 +312,7 @@ private void Main() {
     detailsnone.addActionListener(new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-            select_query2 = " " ;
+            select_query3 = " " ;
             group_by2 = " ";
             moredetails_button.setEnabled(false);
 
@@ -347,7 +348,7 @@ private void Main() {
 				   }
 			   }
 			   
-			   sql = select_query1 + select_query2 + from_query + where_query + group_by1 + group_by2;
+			   sql = select_query1 + select_query2 + select_query3 + from_query + where_query + group_by1 + group_by2;
 			   System.out.println(sql);
 			   startTime = System.currentTimeMillis();
 			   ResultSet rs = stmt.executeQuery(sql);
