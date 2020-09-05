@@ -99,7 +99,7 @@ JButton run = new JButton("Run set query");
 ArrayList<String> columnNames = new ArrayList<String>();
 ArrayList<ArrayList> data = new ArrayList<ArrayList>();
 //static String DB_URL = "jdbc:mysql://localhost:3306/new_schema";
-String DB_URL = "jdbc:mysql://localhost:3306/advandbmco2?allowPublicKeyRetrieval=true&useSSL=false";
+String DB_URL = "jdbc:mysql://localhost:3306/marinduque_clone?allowPublicKeyRetrieval=true&useSSL=false";
 String USER = "root";
 String PASS = "root";
 String sql;
