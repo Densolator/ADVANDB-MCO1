@@ -285,7 +285,7 @@ private void Main() {
         public void actionPerformed(ActionEvent e) {
             select_query2 = ", water, COUNT(water) AS 'number of " + combo.getSelectedItem().toString() +" that use this water source' " ;
             group_by2 = ",water ";
-
+            moredetails_button.setEnabled(true);
         }
     });
     
@@ -294,6 +294,7 @@ private void Main() {
         public void actionPerformed(ActionEvent e) {
             select_query2 = ", AVG(water_dist) AS 'average distance to nearest water source' " ;
             group_by2 = "";
+            moredetails_button.setEnabled(true);
 
         }
     });
@@ -303,7 +304,7 @@ private void Main() {
         public void actionPerformed(ActionEvent e) {
             select_query2 = ",  water_supply AS 'Most common answer', COUNT(water_supply) AS 'number of times answered' " ;
             group_by2 = " ORDER BY 'most prevalent answer' DESC LIMIT 1 ";
-
+            moredetails_button.setEnabled(true);
         }
     });
     
@@ -312,6 +313,7 @@ private void Main() {
         public void actionPerformed(ActionEvent e) {
             select_query2 = " " ;
             group_by2 = " ";
+            moredetails_button.setEnabled(false);
 
         }
     });
@@ -333,7 +335,7 @@ private void Main() {
 			   System.out.println("Creating statement...");
 			   stmt = conn.createStatement();
 			   
-			   if(moredetails_button.isSelected())
+			   if(moredetails_button.isSelected() && moredetails_button.isEnabled())
 			   {
 				   switch(combo.getSelectedIndex())
 				   {
