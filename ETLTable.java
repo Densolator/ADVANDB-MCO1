@@ -142,43 +142,43 @@ public class ETLTable {
 				if(a[1]==0)
 					is_student= false;
 				else{
-					if (a[1]==1) student_level="Day Care";
-					else if (a[1]==2)student_level="Nursery/Kindergarten/Preparatory";
-					else if (a[1]==11)student_level="Grade 1";
-					else if (a[1]==12)student_level="Grade 2";
-					else if (a[1]==13)student_level="Grade 3";
-					else if (a[1]==14)student_level="Grade 4";
-					else if (a[1]==15)student_level="Grade 5";
-					else if (a[1]==16)student_level="Grade 6";
-					else if (a[1]==17)student_level="Grade 7";
-					else if (a[1]==18)student_level="Grade 8";
-					else if (a[1]==19)student_level="Grade 9/3rd Year HS";
-					else if (a[1]==20)student_level="Grade 10/4th Year HS";
-					else if (a[1]==21)student_level="Grade 11";
-					else if (a[1]==22)student_level="Grade 12";
-					else if (a[1]==23)student_level="1st year PS PS/N-T/TV";
-					else if (a[1]==24)student_level="2nd year PS PS/N-T/TV";
-					else if (a[1]==25)student_level="3rd year PS PS/N-T/TV";
-					else if (a[1]==31)student_level="1st year College";
-					else if (a[1]==32)student_level="2nd year College";
-					else if (a[1]==33)student_level="3rd year College";
-					else if (a[1]==34)student_level="4th year College or higher";
-					else if (a[1]==41)student_level="Post grad with units";
-					else if (a[1]==51)student_level="ALS Elementary";
-					else if (a[1]==52)student_level="ALS Secondary";
-					else if (a[1]==53)student_level="SPED Elementary";
-					else if (a[1]==54)student_level="SPED Secondary";
+					if (a[1]==1) student_level="1 Day Care";
+					else if (a[1]==2)student_level="2 Nursery/Kindergarten/Preparatory";
+					else if (a[1]==11)student_level="11 Grade 1";
+					else if (a[1]==12)student_level="12 Grade 2";
+					else if (a[1]==13)student_level="13 Grade 3";
+					else if (a[1]==14)student_level="14 Grade 4";
+					else if (a[1]==15)student_level="15 Grade 5";
+					else if (a[1]==16)student_level="16 Grade 6";
+					else if (a[1]==17)student_level="17 Grade 7";
+					else if (a[1]==18)student_level="18 Grade 8";
+					else if (a[1]==19)student_level="19 Grade 9/3rd Year HS";
+					else if (a[1]==20)student_level="20 Grade 10/4th Year HS";
+					else if (a[1]==21)student_level="21 Grade 11";
+					else if (a[1]==22)student_level="22 Grade 12";
+					else if (a[1]==23)student_level="23 1st year PS PS/N-T/TV";
+					else if (a[1]==24)student_level="24 2nd year PS PS/N-T/TV";
+					else if (a[1]==25)student_level="25 3rd year PS PS/N-T/TV";
+					else if (a[1]==31)student_level="31 1st year College";
+					else if (a[1]==32)student_level="32 2nd year College";
+					else if (a[1]==33)student_level="33 3rd year College";
+					else if (a[1]==34)student_level="34 4th year College or higher";
+					else if (a[1]==41)student_level="41 Post grad with units";
+					else if (a[1]==51)student_level="51 ALS Elementary";
+					else if (a[1]==52)student_level="52 ALS Secondary";
+					else if (a[1]==53)student_level="53 SPED Elementary";
+					else if (a[1]==54)student_level="54 SPED Secondary";
 				}
 				
 				sql = "INSERT INTO members values(" +a[0]+","+ is_student+",'" +student_level +"')";
 			}
 			else if (b==3) {//farmers
 				
-				if (a[1]==1) crop_type="Sugar Cane";
-				else if (a[1]==2)crop_type="Palay";
-				else if (a[1]==3)crop_type="Corn";
-				else if (a[1]==4)crop_type="Coffee";
-				else if (a[1]==5)crop_type="Other Crops";
+				if (a[1]==1) crop_type="1 Sugar Cane";
+				else if (a[1]==2)crop_type="2 Palay";
+				else if (a[1]==3)crop_type="3 Corn";
+				else if (a[1]==4)crop_type="4 Coffee";
+				else if (a[1]==5)crop_type="5 Other Crops";
 				else if (a[1]==0) {
 					crop_type=null;
 					is_farmer=false;

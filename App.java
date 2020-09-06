@@ -79,7 +79,7 @@ String[] grade_levels = {"1 Day Care",
                          "32 2nd year College",
                          "33 3rd year College",
                          "34 4th year College or higher",
-                         "41Post grad with units",
+                         "41 Post grad with units",
                          "51 ALS Elementary",
                          "52 ALS Secondary",
                          "53 SPED Elementary",
@@ -108,7 +108,8 @@ String select_query1,
 	   select_query2,
 	   select_query3,
 	   from_query,
-	   where_query,
+	   where_query1,
+	   where_query2,
 	   group_by1,
 	   group_by2;
 double startTime;
@@ -228,13 +229,13 @@ private void Main() {
 				case 1: 
 						select_query2 = " ,COUNT(is_student = TRUE) AS 'number of students' ";
 						from_query = "FROM facttable, members ";
-						where_query = "WHERE facttable.id = members.hh_id AND is_student = TRUE ";
+						where_query1 = "WHERE facttable.id = members.hh_id AND is_student = TRUE ";
 						break;
 
 				case 2: 
 						select_query2 = " ,COUNT(is_farmer = TRUE) AS 'number of farmers' ";
 						from_query = "FROM facttable, farming ";
-						where_query = "WHERE facttable.id = farming.hh_id AND is_farmer = TRUE ";
+						where_query1 = "WHERE facttable.id = farming.hh_id AND is_farmer = TRUE ";
 						break;
 
 				}
@@ -286,6 +287,7 @@ private void Main() {
         public void actionPerformed(ActionEvent e) {
             select_query3 = ", water, COUNT(water) AS 'number of " + combo.getSelectedItem().toString() +" that use this water source' " ;
             group_by2 = ",water ";
+            where_query2 = " ";
             moredetails_button.setEnabled(true);
         }
     });
@@ -295,6 +297,7 @@ private void Main() {
         public void actionPerformed(ActionEvent e) {
             select_query3 = ", AVG(water_dist) AS 'average distance to nearest water source' " ;
             group_by2 = "";
+            where_query2 = " ";
             moredetails_button.setEnabled(true);
 
         }
@@ -305,6 +308,7 @@ private void Main() {
         public void actionPerformed(ActionEvent e) {
             select_query3 = ",  water_supply AS 'Most common answer', COUNT(water_supply) AS 'number of times answered' " ;
             group_by2 = " ORDER BY 'most prevalent answer' DESC LIMIT 1 ";
+            where_query2 = " ";
             moredetails_button.setEnabled(true);
         }
     });
@@ -314,6 +318,7 @@ private void Main() {
         public void actionPerformed(ActionEvent e) {
             select_query3 = " " ;
             group_by2 = " ";
+            where_query2 = " ";
             moredetails_button.setEnabled(false);
 
         }
@@ -341,14 +346,14 @@ private void Main() {
 				   switch(combo.getSelectedIndex())
 				   {
 				   case 0: break;
-				   case 1: where_query = where_query + " AND student_level = " + student_level.getSelectedItem().toString().substring(0,2) + " ";
+				   case 1: where_query2 = " AND student_level = " + student_level.getSelectedItem().toString().substring(0,2) + " ";
 				   		   break;
-				   case 2: where_query = where_query + " AND crop_type = " + planted_crops.getSelectedItem().toString().substring(0,2) + " ";
+				   case 2: where_query2 = " AND crop_type = " + planted_crops.getSelectedItem().toString().substring(0,2) + " ";
 		   		   		   break;
 				   }
 			   }
 			   
-			   sql = select_query1 + select_query2 + select_query3 + from_query + where_query + group_by1 + group_by2;
+			   sql = select_query1 + select_query2 + select_query3 + from_query + where_query1 + where_query2 + group_by1 + group_by2;
 			   System.out.println(sql);
 			   startTime = System.currentTimeMillis();
 			   ResultSet rs = stmt.executeQuery(sql);
