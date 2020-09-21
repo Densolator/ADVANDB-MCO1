@@ -1,5 +1,4 @@
-import javax.swing.table.*;
-
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
@@ -16,6 +15,8 @@ import java.util.ArrayList;
 import java.util.Vector;
 
 import javax.swing.*;
+import javax.swing.border.Border;
+import javax.swing.table.*;
 
 public class App extends JFrame{
 
@@ -31,6 +32,8 @@ JPanel queryPanel = new JPanel();
 JPanel buttonPanel = new JPanel();
 JPanel resultsPanel = new JPanel();
 JPanel statementPanel = new JPanel();
+JPanel details_panel = new JPanel();
+JPanel moredetails = new JPanel();
 JTable table;
 JScrollPane scroll;
 
@@ -116,6 +119,8 @@ double startTime;
 double endTime;
 double executionTime;
 
+Border border = BorderFactory.createLineBorder(Color.BLUE, 2);
+
 public App ()
 {
 	this.setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -138,7 +143,7 @@ private void Main() {
 	statementPanel.setPreferredSize(new Dimension(700,700));
 	statementPanel.removeAll();
 
-    queryPanel.setPreferredSize(new Dimension(700,200));
+    queryPanel.setPreferredSize(new Dimension(700,500));
 	queryPanel.setLayout(new BoxLayout(queryPanel,BoxLayout.Y_AXIS));
 	queryPanel.add(combo);
 	queryPanel.add(statementPanel);
@@ -169,23 +174,32 @@ private void Main() {
     details.add(dec_water);
     details.add(detailsnone);
     
-    statementPanel.add(empty);
+//    statementPanel.add(empty);
+    details_panel.setPreferredSize(new Dimension(700,75));
+    details_panel.add(detailslabel);
+    details_panel.add(water);
+    details_panel.add(nearest_wsource);
+    details_panel.add(dec_water);
+    details_panel.add(detailsnone);
+    statementPanel.add(details_panel);
     
-    statementPanel.add(detailslabel);
-    statementPanel.add(water);
-    statementPanel.add(nearest_wsource);
-    statementPanel.add(dec_water);
-    statementPanel.add(detailsnone);
-    
-    statementPanel.add(moredetails_button);
+    moredetails.setPreferredSize(new Dimension(700,75));
+    moredetails.add(moredetails_button);
     student_details.setVisible(false);
     student_level.setVisible(false);
     crop_details.setVisible(false);
     planted_crops.setVisible(false);
-    statementPanel.add(student_details);
-    statementPanel.add(student_level);
-    statementPanel.add(crop_details);
-    statementPanel.add(planted_crops);
+    moredetails.add(student_details);
+    moredetails.add(student_level);
+    moredetails.add(crop_details);
+    moredetails.add(planted_crops);
+    statementPanel.add(moredetails);
+    
+    statementPanel.setBorder(border);
+    queryPanel.setBorder(border);
+    buttonPanel.setBorder(border);
+    details_panel.setBorder(border);
+    moredetails.setBorder(border);
     
     moredetails_button.addActionListener(new ActionListener() {
 
