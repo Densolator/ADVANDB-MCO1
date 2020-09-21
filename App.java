@@ -195,11 +195,11 @@ private void Main() {
     moredetails.add(planted_crops);
     statementPanel.add(moredetails);
     
-    statementPanel.setBorder(border);
-    queryPanel.setBorder(border);
-    buttonPanel.setBorder(border);
-    details_panel.setBorder(border);
-    moredetails.setBorder(border);
+//    statementPanel.setBorder(border);
+//    queryPanel.setBorder(border);
+//    buttonPanel.setBorder(border);
+//    details_panel.setBorder(border);
+//    moredetails.setBorder(border);
     
     moredetails_button.addActionListener(new ActionListener() {
 
